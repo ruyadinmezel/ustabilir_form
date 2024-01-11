@@ -105,15 +105,25 @@ export default function Home() {
 
   useEffect(() => {
     const getCity = async () => {
-      const req = await fetch(
-        "https://api.ustabilir.com/api/v1/static/location/cities"
-      );
+      const req = await fetch("/api/getCity");
       const getCity = await req.json();
-      //log(getcity.data);
-      setCity(await getCity.data);
+      setCity(getCity.data);
     };
+
     getCity();
   }, []);
+
+  // useEffect(() => {
+  //   const getCity = async () => {
+  //     const req = await fetch(
+  //       "https://api.ustabilir.com/api/v1/static/location/cities"
+  //     );
+  //     const getCity = await req.json();
+  //     //log(getcity.data);
+  //     setCity(await getCity.data);
+  //   };
+  //   getCity();
+  // }, []);
 
   useEffect(() => {
     const getDistrict = async () => {
