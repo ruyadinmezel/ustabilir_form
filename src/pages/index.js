@@ -14,11 +14,27 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import { Divider, Grid, InputAdornment, createTheme } from "@mui/material";
+import {
+  Collapse,
+  Divider,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Paper,
+  createTheme,
+} from "@mui/material";
 import { orange, grey } from "@mui/material/colors";
 import { ThemeProvider } from "@mui/material";
 import CircleIcon from "@mui/icons-material/Circle";
 import Stack from "@mui/material/Stack";
+import Checkbox from "@mui/material";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material";
+import FormGroup from "@mui/material/FormGroup";
 import CategoryOption from "./CategoryOption";
 import SearchIcon from "@mui/icons-material/Search";
 
@@ -135,6 +151,17 @@ export default function Home() {
       console.log("Selected District ID:", selectedDistrict.id);
     }
   };
+
+  // const handleCategoryChange = (event, selectedCategory) => {
+  //   // 'selectedCity' will be the selected city object
+  //   if (selectedCategory) {
+  //     setCategoryName(selectedCategory.name);
+  //     setCategoryId(selectedCategory.id);
+  //     console.log("Selected Category Name:", selectedCategory.name);
+  //     console.log("Selected Category ID:", selectedCategory.id);
+  //   }
+  // };
+
   const [expandedCategory, setExpandedCategory] = useState(null);
 
   const handleCategoryChange = (event, subCategoryId, subCategoryname) => {
@@ -264,6 +291,19 @@ export default function Home() {
 
                   <Box sx={{ height: 200 }}></Box>
                 </Box>
+
+                {/* {category.map((x) => (
+            <Typography key={x.name}>
+              {x.name}
+              {x.id}
+              {x.subCategories.map((y) => (
+                <Typography color="primary" key={y.name}>
+                  {y.name}
+                  {y.id}
+                </Typography>
+              ))}
+            </Typography>
+          ))} */}
               </Box>
             </Grid>
             <Grid item xs={3}>
@@ -321,3 +361,28 @@ export default function Home() {
     </ThemeProvider>
   );
 }
+
+// const [cityData, setCityData] = useState();
+// const [cityNames, setCityNames] = useState();
+
+//   const axios = require("axios");
+//   axios
+//     .get("https://api.ustabilir.com/api/v1/static/location/cities")
+//     .then(function (response) {
+//       setCityData(response.data.data);
+
+//       // console.log(response.data.name);
+//     })
+//     .catch(function (error) {
+//       console.log(error);
+//     });
+
+//   console.log(cityData);
+
+//   return (
+//     <div>
+//       <Typography>USTABİLİR FORM</Typography>
+//       {cityData && cityData.map((city) => <Typography key={city.id}>{city.name}</Typography>)}
+//     </div>
+//   );
+// }
