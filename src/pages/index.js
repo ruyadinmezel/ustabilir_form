@@ -35,7 +35,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material";
 import FormGroup from "@mui/material/FormGroup";
-import CategoryOption from "./CategoryOption";
+import CategoryOption from "@/components/CategoryOption";
 import SearchIcon from "@mui/icons-material/Search";
 
 const inter = Inter({ subsets: ["latin"] });
