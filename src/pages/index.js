@@ -128,20 +128,36 @@ export default function Home() {
   useEffect(() => {
     const getDistrict = async () => {
       if (cityId) {
-        const req = await fetch(
-          `https://api.ustabilir.com/api/v1/static/location/cities/${cityId}/counties`
-        );
-        if (req.ok) {
+        try {
+          const req = await fetch(`/api/getDistrict?cityId=${cityId}`);
           const response = await req.json();
-          setDistrict(response.data);
-        } else {
-          console.error(`Error fetching district data. Status: ${req.status}`);
+          setDistrict(response);
+        } catch (error) {
+          console.error("Error fetching district data:", error);
         }
       }
     };
 
     getDistrict();
   }, [cityId]);
+
+  // useEffect(() => {
+  //   const getDistrict = async () => {
+  //     if (cityId) {
+  //       const req = await fetch(
+  //         `https://api.ustabilir.com/api/v1/static/location/cities/${cityId}/counties`
+  //       );
+  //       if (req.ok) {
+  //         const response = await req.json();
+  //         setDistrict(response.data);
+  //       } else {
+  //         console.error(`Error fetching district data. Status: ${req.status}`);
+  //       }
+  //     }
+  //   };
+
+  //   getDistrict();
+  // }, [cityId]);
 
   const handleCityChange = (event, selectedCity) => {
     if (selectedCity) {
