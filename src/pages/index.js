@@ -238,14 +238,14 @@ export default function Home() {
                       <TextField
                         {...params}
                         label={"Kategori Ara"}
-                        InputProps={{
-                          ...params.InputProps,
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <SearchIcon />
-                            </InputAdornment>
-                          ),
-                        }}
+                        // InputProps={{
+                        //   ...params.InputProps,
+                        //   startAdornment: (
+                        //     <InputAdornment position="start">
+                        //       <SearchIcon />
+                        //     </InputAdornment>
+                        //   ),
+                        // }}
                       />
                     )}
                   />
