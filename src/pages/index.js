@@ -1,8 +1,5 @@
 import * as React from "react";
-import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
 import { useState } from "react";
 import { useEffect } from "react";
 import Container from "@mui/material/Container";
@@ -14,29 +11,12 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import {
-  Collapse,
-  Divider,
-  Grid,
-  IconButton,
-  InputAdornment,
-  Paper,
-  createTheme,
-} from "@mui/material";
+import { Divider, Grid, createTheme } from "@mui/material";
 import { orange, grey } from "@mui/material/colors";
 import { ThemeProvider } from "@mui/material";
 import CircleIcon from "@mui/icons-material/Circle";
 import Stack from "@mui/material/Stack";
-import Checkbox from "@mui/material";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material";
-import FormGroup from "@mui/material/FormGroup";
 import CategoryOption from "@/components/CategoryOption";
-import SearchIcon from "@mui/icons-material/Search";
 
 const inter = Inter({ subsets: ["latin"] });
 const steps = ["Talep oluştur", "Talebi tamamla"];
@@ -75,7 +55,6 @@ export default function Home() {
   useEffect(() => {
     // Save the original console.warn function
     const originalWarn = console.warn;
-
     // Override console.warn to suppress Autocomplete warnings
     console.warn = (message) => {
       if (
@@ -84,7 +63,6 @@ export default function Home() {
         originalWarn(message);
       }
     };
-
     // Clean up the override when the component is unmounted
     return () => {
       console.warn = originalWarn;
@@ -92,15 +70,17 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const getCategory = async () => {
-      const req = await fetch(
-        "https://pp-api.ustabilir.com/api/v1/static/categories/with-subcategories"
-      );
-      const getCategory = await req.json();
-      // console.log(getCategory.data);
-      setCategory(await getCategory.data);
+    const getCategories = async () => {
+      try {
+        const req = await fetch("/api/getCategories");
+        const response = await req.json();
+        setCategory(response);
+      } catch (error) {
+        console.error("Error fetching category data:", error);
+      }
     };
-    getCategory();
+
+    getCategories();
   }, []);
 
   useEffect(() => {
@@ -112,18 +92,6 @@ export default function Home() {
 
     getCity();
   }, []);
-
-  // useEffect(() => {
-  //   const getCity = async () => {
-  //     const req = await fetch(
-  //       "https://api.ustabilir.com/api/v1/static/location/cities"
-  //     );
-  //     const getCity = await req.json();
-  //     //log(getcity.data);
-  //     setCity(await getCity.data);
-  //   };
-  //   getCity();
-  // }, []);
 
   useEffect(() => {
     const getDistrict = async () => {
@@ -140,24 +108,6 @@ export default function Home() {
 
     getDistrict();
   }, [cityId]);
-
-  // useEffect(() => {
-  //   const getDistrict = async () => {
-  //     if (cityId) {
-  //       const req = await fetch(
-  //         `https://api.ustabilir.com/api/v1/static/location/cities/${cityId}/counties`
-  //       );
-  //       if (req.ok) {
-  //         const response = await req.json();
-  //         setDistrict(response.data);
-  //       } else {
-  //         console.error(`Error fetching district data. Status: ${req.status}`);
-  //       }
-  //     }
-  //   };
-
-  //   getDistrict();
-  // }, [cityId]);
 
   const handleCityChange = (event, selectedCity) => {
     if (selectedCity) {
@@ -178,16 +128,6 @@ export default function Home() {
     }
   };
 
-  // const handleCategoryChange = (event, selectedCategory) => {
-  //   // 'selectedCity' will be the selected city object
-  //   if (selectedCategory) {
-  //     setCategoryName(selectedCategory.name);
-  //     setCategoryId(selectedCategory.id);
-  //     console.log("Selected Category Name:", selectedCategory.name);
-  //     console.log("Selected Category ID:", selectedCategory.id);
-  //   }
-  // };
-
   const [expandedCategory, setExpandedCategory] = useState(null);
 
   const handleCategoryChange = (event, subCategoryId, subCategoryname) => {
@@ -200,10 +140,6 @@ export default function Home() {
     }
   };
 
-  const handleCheckboxChange = (event, subCategoryId) => {
-    // Handle checkbox change logic here
-    console.log(`Checkbox for subcategory ${subCategoryId} changed`);
-  };
   return (
     <ThemeProvider theme={theme}>
       <div>
@@ -261,26 +197,15 @@ export default function Home() {
                     sx={{ width: 300 }}
                     value={categoryName !== "" ? { name: categoryName } : null}
                     renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label={"Kategori Ara"}
-                        // InputProps={{
-                        //   ...params.InputProps,
-                        //   startAdornment: (
-                        //     <InputAdornment position="start">
-                        //       <SearchIcon />
-                        //     </InputAdornment>
-                        //   ),
-                        // }}
-                      />
+                      <TextField {...params} label={"Kategori Ara"} />
                     )}
                   />
 
                   <Stack direction="row" alignItems="center" gap={1}>
                     <CircleIcon color="primary"></CircleIcon>
-
                     <h1>Konum</h1>
                   </Stack>
+
                   <Stack direction="row" alignItems="center" gap={1}>
                     <Autocomplete
                       disablePortal
@@ -309,27 +234,14 @@ export default function Home() {
                       )}
                     />
                   </Stack>
+
                   <Stack direction="row" alignItems="center" gap={1}>
                     <CircleIcon color="primary"></CircleIcon>
-
                     <h1>Usta Seçimi</h1>
                   </Stack>
 
                   <Box sx={{ height: 200 }}></Box>
                 </Box>
-
-                {/* {category.map((x) => (
-            <Typography key={x.name}>
-              {x.name}
-              {x.id}
-              {x.subCategories.map((y) => (
-                <Typography color="primary" key={y.name}>
-                  {y.name}
-                  {y.id}
-                </Typography>
-              ))}
-            </Typography>
-          ))} */}
               </Box>
             </Grid>
             <Grid item xs={3}>
@@ -387,28 +299,3 @@ export default function Home() {
     </ThemeProvider>
   );
 }
-
-// const [cityData, setCityData] = useState();
-// const [cityNames, setCityNames] = useState();
-
-//   const axios = require("axios");
-//   axios
-//     .get("https://api.ustabilir.com/api/v1/static/location/cities")
-//     .then(function (response) {
-//       setCityData(response.data.data);
-
-//       // console.log(response.data.name);
-//     })
-//     .catch(function (error) {
-//       console.log(error);
-//     });
-
-//   console.log(cityData);
-
-//   return (
-//     <div>
-//       <Typography>USTABİLİR FORM</Typography>
-//       {cityData && cityData.map((city) => <Typography key={city.id}>{city.name}</Typography>)}
-//     </div>
-//   );
-// }
