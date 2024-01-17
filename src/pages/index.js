@@ -171,7 +171,9 @@ export default function Home() {
       <ThemeProvider theme={theme}>
         <div>
           <Box>
-            <Container sx={{ m: 2, mt: 10, ml: "15rem" }}>
+            <Container
+              sx={{ m: 2, mt: [5, 10], ml: [0, "15rem"], width: "100%" }}
+            >
               <Stepper nonLinear activeStep={activeStep}>
                 {steps.map((label, index) => (
                   <Step key={label} completed={completed[index]}>
@@ -182,9 +184,9 @@ export default function Home() {
             </Container>
             <Divider sx={{ mt: 3 }}></Divider>
 
-            <Grid container alignItems="flex-start">
-              <Grid item xs={2}></Grid>
-              <Grid item xs={6} elevation={2}>
+            <Grid container alignItems="flex-start" spacing={2}>
+              <Grid item xs={12} md={2}></Grid>
+              <Grid item xs={12} md={6} elevation={2}>
                 <Box
                   sx={{
                     borderRadius: 3,
@@ -198,7 +200,7 @@ export default function Home() {
                   <Box sx={{ ml: 10 }}>
                     <h1>Talep Oluştur </h1>
                   </Box>
-                  <Box maxWidth="xs" sx={{ ml: 15 }}>
+                  <Box maxWidth="xs" sx={{ ml: [2, 15] }}>
                     <Stack direction="row" alignItems="center" gap={1}>
                       <CircleIcon color="primary"></CircleIcon>
 
@@ -262,6 +264,7 @@ export default function Home() {
                           <TextField {...params} label="İlçe Seçiniz" />
                         )}
                       />
+                      <Box sx={{ height: 10 }}></Box>
                     </Stack>
 
                     <Stack direction="row" alignItems="center" gap={1}>
