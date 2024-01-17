@@ -22,11 +22,22 @@ import store from "@/store/store";
 import { setCity1 } from "@/store/reducers/cityReducer";
 import { setCategory1 } from "@/store/reducers/categoryReducer";
 import { setDistrict1 } from "@/store/reducers/districtReducer";
+import { useRouter } from "next/router";
 
 const inter = Inter({ subsets: ["latin"] });
 const steps = ["Talep oluştur", "Talebi tamamla"];
 
 export default function Home() {
+  const router = useRouter();
+  const handleClick = () => {
+    console.log("First Step Complete!");
+    console.log("Directing to second step...");
+    router.push("/step2");
+  };
+  const isButtonClickable = () => {
+    // Check if all necessary choices are made
+    return categoryName !== "" && cityId !== "" && districtName !== "";
+  };
   const theme = createTheme({
     palette: {
       primary: {
@@ -312,16 +323,27 @@ export default function Home() {
                     </Typography>
 
                     <Box sx={{ mt: 5, mr: 5 }}>
-                      <Button variant="contained" color="primary" fullWidth>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleClick}
+                        fullWidth
+                        disabled={!isButtonClickable()}
+                      >
                         <Typography sx={{ color: "white" }}>
                           {" "}
                           Devam Et
                         </Typography>
                       </Button>
 
-                      <Button variant="outlined" sx={{ mt: 3 }} fullWidth>
+                      {/* <Button
+                        href="https://www.ustabilir.com/"
+                        variant="outlined"
+                        sx={{ mt: 3 }}
+                        fullWidth
+                      >
                         <Typography> Vazgeç</Typography>
-                      </Button>
+                      </Button> */}
                     </Box>
 
                     <Box sx={{ height: 5 }}></Box>
