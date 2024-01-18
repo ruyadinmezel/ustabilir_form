@@ -19,12 +19,14 @@ import { Provider, useDispatch, useSelector } from "react-redux";
 import store from "@/store/store";
 import { useFormik } from "formik";
 import { setDescription } from "@/store/reducers/descriptionReducer";
+import { useRef } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 const steps = ["Talep oluştur", "Talebi tamamla"];
 
 export default function Step2() {
   const [activeStep, setActiveStep] = useState(1);
+  const [text, setText] = useState("");
   const [completed, setCompleted] = useState({});
 
   const totalSteps = () => {
@@ -49,18 +51,45 @@ export default function Step2() {
   // const [description, setDescription] = useState("");
 
   // Now you can log or use the values as needed
-  console.log("City:", cityRedux);
-  console.log("District:", districtRedux);
-  console.log("Category:", categoryRedux);
-  console.log("Descrition:", descriptionRedux);
+  // console.log("City:", cityRedux);
+  // console.log("District:", districtRedux);
+  // console.log("Category:", categoryRedux);
+  console.log("Description:", descriptionRedux);
+  const fileInputRef = useRef(null);
+
+  const handleFileInputChange = (event) => {
+    const selectedFile = event.currentTarget.files[0];
+
+    if (selectedFile) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        formik.setValues({
+          ...formik.values,
+          image: selectedFile,
+          base64Image: reader.result, // Save base64-encoded image
+        });
+      };
+
+      reader.readAsDataURL(selectedFile);
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
-      descriptionText: "", // Add other form fields here
+      descriptionText: "",
+      image: null, // Add the image field
+      base64Image: "", // Add the base64Image field
     },
+
     onSubmit: (values) => {
-      // Dispatch the action with the description
-      dispatch(setDescription({ text: values.descriptionText }));
+      // Dispatch the action with the description and base64-encoded image
+      dispatch(
+        setDescription({
+          text: values.descriptionText,
+          image: values.base64Image,
+        })
+      );
       // Other form submission logic
     },
   });
@@ -106,16 +135,18 @@ export default function Step2() {
 
                           <h1>Açıklama</h1>
                         </Stack>
-                        <TextField
-                          id="descriptionText"
-                          label="Açıklama Ekle"
-                          multiline
-                          rows={4}
-                          length={300}
-                          sx={{ width: 500 }}
-                          onChange={formik.handleChange}
-                          value={formik.values.descriptionText}
-                        />
+                        <Box sx={{ mr: 5 }}>
+                          <TextField
+                            id="descriptionText"
+                            label="Açıklama Ekle"
+                            multiline
+                            rows={4}
+                            length={300}
+                            fullWidth
+                            onChange={formik.handleChange}
+                            value={formik.values.descriptionText}
+                          />
+                        </Box>
                         <Stack direction="row" alignItems="center" gap={1}>
                           <CircleIcon color="primary"></CircleIcon>
                           <h1>Fotoğraf Ekle</h1>
@@ -124,29 +155,36 @@ export default function Step2() {
                           Talebinizin detaylarını anlatan en fazla 6 adet
                           fotoğraf yükleyebilirsiniz
                         </Typography>
-                        <TextField
+                        <Box sx={{ mr: 5 }}>
+                          <TextField
+                            id="imageInput"
+                            label="Fotoğrafları sürükleyin veya dosya seçin."
+                            multiline
+                            rows={4}
+                            fullWidth
+                            sx={{
+                              cursor: "pointer",
+                            }}
+                            onClick={() => fileInputRef.current.click()}
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              const selectedFile = e.dataTransfer.files[0];
+                              if (selectedFile) {
+                                handleFileInputChange({
+                                  currentTarget: { files: [selectedFile] },
+                                });
+                              }
+                            }}
+                          ></TextField>
+                        </Box>
+                        <input
                           type="file"
                           accept="image/*"
-                          ///label="Fotoğrafları sürükleyin veya dosya seçin."
-                          rows={4}
-                          sx={{ width: 500 }}
-                        >
-                          {" "}
-                        </TextField>
-                        <input type="file" accept="image/*" hidden></input>
-
-                        {/* <Button
-                        variant="outlined"
-                        component="label"
-                        sx={{
-                          width: 400,
-                          heigth: 300,
-                        }}
-                      >
-                        UPLOAD
-                        <input accept="image/*" hidden type="file" />
-                      </Button> */}
-
+                          ref={fileInputRef}
+                          style={{ display: "none" }}
+                          onChange={handleFileInputChange}
+                        />
                         <Box sx={{ height: 142 }}></Box>
                       </Box>
                     </Box>
@@ -186,6 +224,14 @@ export default function Step2() {
                       <Typography>
                         {cityRedux.cityName} - {districtRedux.districtName}
                       </Typography>
+                      <Typography>
+                        <strong>Description</strong>
+                      </Typography>
+                      <Typography>{descriptionRedux.text}</Typography>
+                      <Typography>
+                        <strong>Image</strong>
+                      </Typography>
+                      <Typography>{descriptionRedux.image}</Typography>
 
                       <Box sx={{ mt: 5, mr: 5 }}>
                         <Button
