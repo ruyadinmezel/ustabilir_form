@@ -17,6 +17,8 @@ import CircleIcon from "@mui/icons-material/Circle";
 import Stack from "@mui/material/Stack";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import store from "@/store/store";
+import { useFormik } from "formik";
+import { setDescription } from "@/store/reducers/descriptionReducer";
 
 const inter = Inter({ subsets: ["latin"] });
 const steps = ["Talep oluştur", "Talebi tamamla"];
@@ -42,80 +44,98 @@ export default function Step2() {
   const cityRedux = useSelector((state) => state.city);
   const districtRedux = useSelector((state) => state.district);
   const categoryRedux = useSelector((state) => state.category);
+  const descriptionRedux = useSelector((state) => state.description);
+  const dispatch = useDispatch();
+  // const [description, setDescription] = useState("");
 
   // Now you can log or use the values as needed
   console.log("City:", cityRedux);
   console.log("District:", districtRedux);
   console.log("Category:", categoryRedux);
+  console.log("Descrition:", descriptionRedux);
+
+  const formik = useFormik({
+    initialValues: {
+      descriptionText: "", // Add other form fields here
+    },
+    onSubmit: (values) => {
+      // Dispatch the action with the description
+      dispatch(setDescription({ text: values.descriptionText }));
+      // Other form submission logic
+    },
+  });
 
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <div>
-          <Box>
-            <Container
-              sx={{ m: 2, mt: [5, 10], ml: [0, "15rem"], width: "100%" }}
-            >
-              <Stepper nonLinear activeStep={activeStep}>
-                {steps.map((label, index) => (
-                  <Step key={label} completed={completed[index]}>
-                    <StepButton color="light">{label}</StepButton>
-                  </Step>
-                ))}
-              </Stepper>
-            </Container>
-            <Divider sx={{ mt: 3 }}></Divider>
+        <form onSubmit={formik.handleSubmit}>
+          <div>
+            <Box>
+              <Container
+                sx={{ m: 2, mt: [5, 10], ml: [0, "15rem"], width: "100%" }}
+              >
+                <Stepper nonLinear activeStep={activeStep}>
+                  {steps.map((label, index) => (
+                    <Step key={label} completed={completed[index]}>
+                      <StepButton color="light">{label}</StepButton>
+                    </Step>
+                  ))}
+                </Stepper>
+              </Container>
+              <Divider sx={{ mt: 3 }}></Divider>
 
-            <Grid container alignItems="flex-start" spacing={2}>
-              <Grid item xs={12} md={2}></Grid>
-              <Grid item xs={12} md={6} elevation={2}>
-                <Box
-                  sx={{
-                    borderRadius: 3,
-                    boxShadow: 3,
-                    width: "100%",
-                    height: "100%",
-                    mt: 5,
-                  }}
-                >
-                  <Box sx={{ height: 30 }}></Box>
-                  <Box sx={{ ml: 10 }}>
-                    <h1>Talebi Tamamla </h1>
+              <Grid container alignItems="flex-start" spacing={2}>
+                <Grid item xs={12} md={2}></Grid>
+                <Grid item xs={12} md={6} elevation={2}>
+                  <Box
+                    sx={{
+                      borderRadius: 3,
+                      boxShadow: 3,
+                      width: "100%",
+                      height: "100%",
+                      mt: 5,
+                    }}
+                  >
+                    <Box sx={{ height: 30 }}></Box>
+                    <Box sx={{ ml: 10 }}>
+                      <h1>Talebi Tamamla </h1>
 
-                    <Box maxWidth="xs" sx={{ ml: [2, 5] }}>
-                      <Stack direction="row" alignItems="center" gap={1}>
-                        <CircleIcon color="primary"></CircleIcon>
+                      <Box maxWidth="xs" sx={{ ml: [2, 5] }}>
+                        <Stack direction="row" alignItems="center" gap={1}>
+                          <CircleIcon color="primary"></CircleIcon>
 
-                        <h1>Açıklama</h1>
-                      </Stack>
-                      <TextField
-                        id="outlined-multiline-static"
-                        label="Açıklama Ekle"
-                        multiline
-                        rows={4}
-                        length={300}
-                        sx={{ width: 500 }}
-                      />
-                      <Stack direction="row" alignItems="center" gap={1}>
-                        <CircleIcon color="primary"></CircleIcon>
-                        <h1>Fotoğraf Ekle</h1>
-                      </Stack>
-                      <Typography sx={{ mb: 1 }}>
-                        Talebinizin detaylarını anlatan en fazla 6 adet fotoğraf
-                        yükleyebilirsiniz
-                      </Typography>
-                      <TextField
-                        type="file"
-                        accept="image/*"
-                        ///label="Fotoğrafları sürükleyin veya dosya seçin."
-                        rows={4}
-                        sx={{ width: 500 }}
-                      >
-                        {" "}
-                      </TextField>
-                      <input type="file" accept="image/*" hidden></input>
+                          <h1>Açıklama</h1>
+                        </Stack>
+                        <TextField
+                          id="descriptionText"
+                          label="Açıklama Ekle"
+                          multiline
+                          rows={4}
+                          length={300}
+                          sx={{ width: 500 }}
+                          onChange={formik.handleChange}
+                          value={formik.values.descriptionText}
+                        />
+                        <Stack direction="row" alignItems="center" gap={1}>
+                          <CircleIcon color="primary"></CircleIcon>
+                          <h1>Fotoğraf Ekle</h1>
+                        </Stack>
+                        <Typography sx={{ mb: 1 }}>
+                          Talebinizin detaylarını anlatan en fazla 6 adet
+                          fotoğraf yükleyebilirsiniz
+                        </Typography>
+                        <TextField
+                          type="file"
+                          accept="image/*"
+                          ///label="Fotoğrafları sürükleyin veya dosya seçin."
+                          rows={4}
+                          sx={{ width: 500 }}
+                        >
+                          {" "}
+                        </TextField>
+                        <input type="file" accept="image/*" hidden></input>
 
-                      {/* <Button
+                        {/* <Button
                         variant="outlined"
                         component="label"
                         sx={{
@@ -127,62 +147,69 @@ export default function Step2() {
                         <input accept="image/*" hidden type="file" />
                       </Button> */}
 
-                      <Box sx={{ height: 142 }}></Box>
+                        <Box sx={{ height: 142 }}></Box>
+                      </Box>
                     </Box>
                   </Box>
-                </Box>
-              </Grid>
-              <Grid item xs={3}>
-                <Box
-                  sx={{
-                    borderRadius: 3,
-                    boxShadow: 3,
-                    width: 350,
-                    height: 380,
-                    ml: 3,
-                    mt: 5,
-                  }}
-                >
+                </Grid>
+                <Grid item xs={3}>
                   <Box
                     sx={{
-                      borderTopLeftRadius: 8,
-                      borderTopRightRadius: 8,
-                      backgroundColor: theme.palette.primary.dark,
+                      borderRadius: 3,
+                      boxShadow: 3,
                       width: 350,
-                      height: 50,
+                      height: 380,
+                      ml: 3,
+                      mt: 5,
                     }}
-                  ></Box>
+                  >
+                    <Box
+                      sx={{
+                        borderTopLeftRadius: 8,
+                        borderTopRightRadius: 8,
+                        backgroundColor: theme.palette.primary.dark,
+                        width: 350,
+                        height: 50,
+                      }}
+                    ></Box>
 
-                  <Box sx={{ ml: 5 }}>
-                    <Box sx={{ height: 40 }}></Box>
-                    <Typography>
-                      <strong>Hizmet Kategorisi</strong>
-                    </Typography>
-                    <Typography>{categoryRedux.categoryName}</Typography>
-                    <Box sx={{ height: 7 }}></Box>
-                    <Typography>
-                      <strong>Konum</strong>
-                    </Typography>
-                    <Typography>
-                      {cityRedux.cityName} - {districtRedux.districtName}
-                    </Typography>
+                    <Box sx={{ ml: 5 }}>
+                      <Box sx={{ height: 40 }}></Box>
+                      <Typography>
+                        <strong>Hizmet Kategorisi</strong>
+                      </Typography>
+                      <Typography>{categoryRedux.categoryName}</Typography>
+                      <Box sx={{ height: 7 }}></Box>
+                      <Typography>
+                        <strong>Konum</strong>
+                      </Typography>
+                      <Typography>
+                        {cityRedux.cityName} - {districtRedux.districtName}
+                      </Typography>
 
-                    <Box sx={{ mt: 5, mr: 5 }}>
-                      <Button variant="contained" color="primary" fullWidth>
-                        <Typography sx={{ color: "white" }}>
-                          {" "}
-                          Talebi Gönder
-                        </Typography>
-                      </Button>
+                      <Box sx={{ mt: 5, mr: 5 }}>
+                        <Button
+                          type="submit"
+                          variant="contained"
+                          color="primary"
+                          fullWidth
+                          onClick={formik.handleSubmit}
+                        >
+                          <Typography sx={{ color: "white" }}>
+                            {" "}
+                            Talebi Gönder
+                          </Typography>
+                        </Button>
+                      </Box>
+
+                      <Box sx={{ height: 5 }}></Box>
                     </Box>
-
-                    <Box sx={{ height: 5 }}></Box>
                   </Box>
-                </Box>
+                </Grid>
               </Grid>
-            </Grid>
-          </Box>
-        </div>
+            </Box>
+          </div>
+        </form>
       </ThemeProvider>
     </Provider>
   );
